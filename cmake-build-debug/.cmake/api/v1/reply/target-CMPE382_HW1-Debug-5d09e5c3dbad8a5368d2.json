@@ -2,10 +2,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "CMPE382_HW1.exe"
-		},
-		{
-			"path" : "CMPE382_HW1.pdb"
+			"path" : "CMPE382_HW1"
 		}
 	],
 	"backtrace" : 1,
@@ -68,16 +65,12 @@
 			{
 				"fragment" : "",
 				"role" : "flags"
-			},
-			{
-				"fragment" : "-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
-				"role" : "libraries"
 			}
 		],
 		"language" : "C"
 	},
 	"name" : "CMPE382_HW1",
-	"nameOnDisk" : "CMPE382_HW1.exe",
+	"nameOnDisk" : "CMPE382_HW1",
 	"paths" : 
 	{
 		"build" : ".",

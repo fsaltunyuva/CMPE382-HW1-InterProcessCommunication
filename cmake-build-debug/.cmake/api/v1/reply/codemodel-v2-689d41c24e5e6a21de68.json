@@ -6,7 +6,7 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.26"
@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "CMPE382_HW1::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-CMPE382_HW1-Debug-ad90c770ebe81bac7418.json",
+					"jsonFile" : "target-CMPE382_HW1-Debug-5d09e5c3dbad8a5368d2.json",
 					"name" : "CMPE382_HW1",
 					"projectIndex" : 0
 				}
@@ -49,12 +49,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/furkan/Documents/GitHub/CMPE382-HW1/cmake-build-debug",
-		"source" : "C:/Users/furkan/Documents/GitHub/CMPE382-HW1"
+		"build" : "/home/furkan/Desktop/CMPE382-HW1-main/cmake-build-debug",
+		"source" : "/home/furkan/Desktop/CMPE382-HW1-main"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 5
+		"minor" : 6
 	}
 }

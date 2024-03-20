@@ -1,0 +1,1 @@
+/usr/bin/cc -g CMakeFiles/CMPE382_HW1.dir/hw1.c.o -o CMPE382_HW1 
