@@ -199,3 +199,5 @@ int readFileWriteToPipe(int fd_p2, int fd_p3, int file_size) { // First arrow fr
     fclose(fp);
     return 1; // Return 1 if the file is read and written to the pipes successfully
 }
+
+//Comment to test git
