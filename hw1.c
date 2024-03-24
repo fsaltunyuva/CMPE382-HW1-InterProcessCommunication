@@ -7,8 +7,6 @@
 #define FILELOCATION "/home/furkan/Desktop/CMPE382/HW1/numbers.txt"
 #define SLEEPDURATIONBETWEENWRITES 2000
 
-//TODO: Make the length of the text file dynamic (Currently it is 1000)
-
 int main(int argc, char *argv[])
 {
     // Function prototypes
@@ -83,9 +81,7 @@ int main(int argc, char *argv[])
             char* line = NULL;
             size_t len = 0;
 
-            //fp = fopen(FILELOCATION, "r"); //TODO: Read the filename as a command line argument
-            fp = fopen(argv[0], "r");
-
+            fp = fopen(argv[1], "r"); // Open the file in read mode
 
             while (getline(&line, &len, fp) != -1) {
                 int number = atoi(line); // Convert the read line to an integer
@@ -110,7 +106,7 @@ int main(int argc, char *argv[])
             waitpid(child1_pid, &child_status1, 0); // Wait for the first child process to terminate
             waitpid(child2_pid, &child_status2, 0); // Wait for the second child process to terminate
 
-            printf("Input file: %s\n", argv[0]); // Print the name of the input file
+            printf("Input file: %s\n", argv[1]); // Print the name of the input file
 
             //TODO: Ensure that the size parameter is correct
             printDigitCountFromArr(digit_count_array, current_index_of_digit_count_array); // Print the number of digits of the numbers read from the file
@@ -168,7 +164,7 @@ int printDigitCountFromArr(int arr[], int size){
     printf("2 digits - %d\n", two_digit_count);
     printf("3 digits - %d\n", three_digit_count);
     printf("4 digits - %d\n", four_digit_count);
-    printf("5 digits - %d\n", five_digit_count);
+    printf("5 digits - %d", five_digit_count);
     return 1;
 }
 
@@ -187,4 +183,3 @@ int printIsPrimeFromArr(int arr[], int size){
     printf("Nonprimes - %d\n", non_prime_count);
     return 1;
 }
-
