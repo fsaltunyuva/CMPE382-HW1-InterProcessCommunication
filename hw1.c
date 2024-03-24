@@ -5,169 +5,117 @@
 #include <string.h>
 
 #define FILELOCATION "/home/furkan/Desktop/CMPE382/HW1/numbers.txt"
+#define SLEEPDURATIONBETWEENWRITES 2000
 
 //TODO: Make the length of the text file dynamic (Currently it is 1000)
 
-int main()
+int main(int argc, char *argv[])
 {
     // Function prototypes
-    int readFileWriteToPipe(int fd_p2, int fd_p3, int file_size);
-    int nrDigits(int number);
+    int getDigitCount(int number);
     int isPrime(int number);
+    int printDigitCountFromArr(int arr[], int size);
+    int printIsPrimeFromArr(int arr[], int size);
 
     int child_status1; // Status of the first child process
     int child_status2; // Status of the second child process
 
-    int file_size = 0; // Size of the text file
-
-    __pid_t parent_pid, child1_pid, child2_pid; // PIDs of the child processes
+    __pid_t child1_pid, child2_pid; // PIDs of the child processes
 
     // Create 4 pipes (pipe[0] is for reading, pipe[1] is for writing)
-    int pipe1[2], pipe2[2], pipe3[2], pipe4[2];
+    int pipe1[2], pipe2[2];
     pipe(pipe1); // First arrow from left (P1 --> P2)
     pipe(pipe2); // Second arrow from left (P2 --> P1)
-    pipe(pipe3); // Third arrow from left (P3 --> P1)
-    pipe(pipe4); // Fourth arrow from left (P1 --> P3)
-
-    printf("Original pid is %d\n", getpid());
-    parent_pid = getpid();
 
     child1_pid = fork(); // Create the first child process
 
     if (child1_pid == 0){ // First child process (P2)
-        printf("This is the 1st child process, pid = %d,"
-               " parent pid = %d\n", getpid(), getppid());
 
-        close(pipe1[1]); // Close the writing end of the first pipe
-        close(pipe2[0]); // Close the reading end of the second pipe
+        close(pipe1[1]); // Close the writing end of the pipe1
+        close(pipe2[0]); // Close the reading end of the pipe2
 
         int read_number = 0;
         while(read_number != -1){
             read(pipe1[0],&read_number,sizeof(read_number)); // Read the current number from the pipe1
-            int digit_count = nrDigits(read_number);
+
+            int digit_count = getDigitCount(read_number); // Get the number of digits of the current number
             write(pipe2[1], &digit_count, sizeof(digit_count)); // Write the number of digits of the current number to the pipe2
-            //TODO: Check if the current method works if so, do it for the other child process as well
         }
 
-
-//        // Read the numbers from the pipe1
-//        char read_numbers_from_p1_string[1000][32]; // String array for the numbers read from the pipe1
-//        read(pipe1[0], read_numbers_from_p1_string, sizeof(read_numbers_from_p1_string));
-//
-//        // int read_numbers_from_p1[1000]; // Integer array for the numbers read from the pipe1
-//
-//        int one_digit_numbers = 0;
-//        int two_digit_numbers = 0;
-//        int three_digit_numbers = 0;
-//        int four_digit_numbers = 0;
-//        int five_digit_numbers = 0;
-//
-//        for(int i = 0; i < 1000; i++){
-//            //read_numbers_from_p1[i] = atoi(read_numbers_from_p1_string[i]);
-//
-//            // Count the number of digits of the numbers
-//            int digit_count = nrDigits(atoi(read_numbers_from_p1_string[i]));
-//
-//            if(digit_count == 1){
-//                one_digit_numbers++;
-//            }
-//            else if(digit_count == 2){
-//                two_digit_numbers++;
-//            }
-//            else if(digit_count == 3){
-//                three_digit_numbers++;
-//            }
-//            else if(digit_count == 4){
-//                four_digit_numbers++;
-//            }
-//            else if(digit_count == 5){
-//                five_digit_numbers++;
-//            }
-//        }
-//
-//        printf("\nOne digit numbers: %d\n", one_digit_numbers);
-//        printf("Two digit numbers: %d\n", two_digit_numbers);
-//        printf("Three digit numbers: %d\n", three_digit_numbers);
-//        printf("Four digit numbers: %d\n", four_digit_numbers);
-//        printf("Five digit numbers: %d\n", five_digit_numbers);
-//
-//        // Convert the numbers to strings to send to the parent from the pipe in string format
-//        char one_digit_numbers_string[12];
-//        char two_digit_numbers_string[12];
-//        char three_digit_numbers_string[12];
-//        char four_digit_numbers_string[12];
-//        char five_digit_numbers_string[12];
-//
-//        sprintf(one_digit_numbers_string, "%d", one_digit_numbers);
-//        sprintf(two_digit_numbers_string, "%d", two_digit_numbers);
-//        sprintf(three_digit_numbers_string, "%d", three_digit_numbers);
-//        sprintf(four_digit_numbers_string, "%d", four_digit_numbers);
-//        sprintf(five_digit_numbers_string, "%d", five_digit_numbers);
-//
-//        char data_to_send_to_parent_from_P2[100]; // Data to be sent to the parent from P2
-//
-//        // Format of the data to be sent to the parent from P2: one_digit_numbers-two_digit_numbers-three_digit_numbers-four_digit_numbers-five_digit_numbers
-//        strcat(data_to_send_to_parent_from_P2, one_digit_numbers_string);
-//        strcat(data_to_send_to_parent_from_P2, "-");
-//        strcat(data_to_send_to_parent_from_P2, two_digit_numbers_string);
-//        strcat(data_to_send_to_parent_from_P2, "-");
-//        strcat(data_to_send_to_parent_from_P2, three_digit_numbers_string);
-//        strcat(data_to_send_to_parent_from_P2, "-");
-//        strcat(data_to_send_to_parent_from_P2, four_digit_numbers_string);
-//        strcat(data_to_send_to_parent_from_P2, "-");
-//        strcat(data_to_send_to_parent_from_P2, five_digit_numbers_string);
-//
-//        //TODO: Write the digit numbers to pipe2
-
-        exit(0);
+        exit(0); // Terminate the first child process
     }
 
     else if (child1_pid > 0){
+        int pipe3[2], pipe4[2];
+        pipe(pipe3); // Third arrow from left (P3 --> P1)
+        pipe(pipe4); // Fourth arrow from left (P1 --> P3)
+
         child2_pid = fork(); // Create the second child process
 
         if(child2_pid == 0){ // Second child process
-            printf("This is the 2nd child process, pid = %d,"
-                   " parent pid = %d\n", getpid(), getppid());
-
             close(pipe3[0]); // Close the reading end of the third pipe
             close(pipe4[1]); // Close the writing end of the fourth pipe
 
-            //TODO: Read the numbers from the pipe4
-            //TODO: Write the count of prime numbers to pipe3
+            int read_number = 0;
+            while(read_number != -1){
+                read(pipe4[0],&read_number,sizeof(read_number)); // Read the current number from the pipe4
 
-            exit(0);
+                int is_prime = isPrime(read_number); // Check if the current number is prime or not
+                write(pipe3[1], &is_prime, sizeof(is_prime)); // Write the result of the prime check to the pipe3
+            }
+
+            exit(0); // Terminate the second child process
         }
 
         else if (child2_pid > 0){ // Parent process
-            printf("This is the parent process, pid = %d\n", getpid());
-
             close(pipe1[0]); // Close the reading end of the first pipe
-            close(pipe2[1]); // Close the reading end of the second pipe
+            close(pipe2[1]); // Close the writing end of the second pipe
             close(pipe3[1]); // Close the writing end of the third pipe
             close(pipe4[0]); // Close the reading end of the fourth pipe
 
-            //readFileWriteToPipe(pipe1[1], pipe4[1], file_size);
+            int digit_count_array[1000]; //TODO: Make the length of the array dynamic
+            int current_index_of_digit_count_array = 0;
 
-            FILE * fp;
-            char * line = NULL;
+            int is_prime_array[1000]; //TODO: Make the length of the array dynamic
+            int current_index_of_is_prime_array = 0;
+
+            FILE* fp;
+            char* line = NULL;
             size_t len = 0;
-            ssize_t read;
 
-            fp = fopen(FILELOCATION, "r");
+            //fp = fopen(FILELOCATION, "r"); //TODO: Read the filename as a command line argument
+            fp = fopen(argv[0], "r");
 
-            while ((read = getline(&line, &len, fp)) != -1) {
-                //printf("Retrieved line of length %zu:\n", read);
-                //printf("%s", line);
-                int number = atoi(line);
-//                printf("Number: %d\n", number);
-                write(pipe1[1], &number, sizeof(number));
-                usleep(2000); // Sleep for 2ms (In windows use Sleep(2))
+
+            while (getline(&line, &len, fp) != -1) {
+                int number = atoi(line); // Convert the read line to an integer
+
+                write(pipe1[1], &number, sizeof(number)); // Write the number to the pipe1
+                //usleep(SLEEPDURATIONBETWEENWRITES); // Sleep for 2ms (In windows use Sleep(2))
+                write(pipe4[1], &number, sizeof(number)); // Write the number to the pipe4
+
+                int read_digit_count;
+                read(pipe2[0], &read_digit_count, sizeof(read_digit_count)); // Read the number of digits of the current number from the pipe2
+                digit_count_array[current_index_of_digit_count_array++] = read_digit_count; // Store the number of digits of the current number
+
+                int read_is_prime;
+                read(pipe3[0], &read_is_prime, sizeof(read_is_prime)); // Read the result of the prime check of the current number from the pipe3
+                is_prime_array[current_index_of_is_prime_array++] = read_is_prime; // Store the result of the prime check of the current number
             }
-            int stopping_number = -1;
-            write(pipe1[1], &stopping_number, sizeof(stopping_number)); // Write the stopping number to the pipe1 to stop the infinite loop in the child process
 
-            waitpid(child1_pid, &child_status1, 0);
-            waitpid(child2_pid, &child_status2, 0);
+            int stopping_number = -1;
+            write(pipe1[1], &stopping_number, sizeof(stopping_number)); // Write the stopping number to the pipe1 to stop the infinite loop in the 1st child process
+            write(pipe4[1], &stopping_number, sizeof(stopping_number)); // Write the stopping number to the pipe4 to stop the infinite loop in the 2nd child process
+
+            waitpid(child1_pid, &child_status1, 0); // Wait for the first child process to terminate
+            waitpid(child2_pid, &child_status2, 0); // Wait for the second child process to terminate
+
+            printf("Input file: %s\n", argv[0]); // Print the name of the input file
+
+            //TODO: Ensure that the size parameter is correct
+            printDigitCountFromArr(digit_count_array, current_index_of_digit_count_array); // Print the number of digits of the numbers read from the file
+            printIsPrimeFromArr(is_prime_array, current_index_of_is_prime_array); // Print the number of prime and non-prime numbers read from the file
+
             fclose(fp);
         }
     }
@@ -175,7 +123,7 @@ int main()
     return 0;
 }
 
-int nrDigits(int number)
+int getDigitCount(int number)
 {
     int count = 0;
     do {
@@ -196,34 +144,47 @@ int isPrime(int number)
     return 1;
 }
 
-int readFileWriteToPipe(int fd_p2, int fd_p3, int file_size) { // First arrow from left and First arrow from right (The arrows that the parent writes to)
-    FILE * fp;
+int printDigitCountFromArr(int arr[], int size){
+    int one_digit_count = 0;
+    int two_digit_count = 0;
+    int three_digit_count = 0;
+    int four_digit_count = 0;
+    int five_digit_count = 0;
 
-    //fp = fopen("/home/furkan/Desktop/CMPE382/HW1/numbers.txt", "r");
-    fp = fopen(FILELOCATION, "r");
-
-    fseek(fp, 0, SEEK_END);
-    file_size = ftell(fp);
-    rewind(fp);
-
-    char buffer[32]; //Buffer for reading the file
-    char* file_content = (char*)malloc(file_size * sizeof(char)); //Content of the file
-
-    printf("File size: %d\n", file_size);
-    char numbers[1000][32];
-    int i = 0;
-
-    while (fgets(buffer, 32, fp) != NULL) {
-        strcpy(numbers[i++], buffer); //Copy the buffer to the numbers array (numbers[i++] = buffer;
-        strcat(file_content, buffer); //Concatenate the buffer to the file content
+    for(int i = 0; i < size; i++){
+        if(arr[i] == 1)
+            one_digit_count++;
+        else if(arr[i] == 2)
+            two_digit_count++;
+        else if(arr[i] == 3)
+            three_digit_count++;
+        else if(arr[i] == 4)
+            four_digit_count++;
+        else if(arr[i] == 5)
+            five_digit_count++;
     }
 
-    write(fd_p2, numbers, sizeof(numbers)); //Write the numbers to the pipe2
-    write(fd_p3, numbers, sizeof(numbers)); //Write the numbers to the pipe3
-
-    // WRITING NUMBERS LINE BY LINE CAUSES PIPE OVERFLOW
-    // HOW TO WRITE ONE BY ONE TO THE PIPE?
-
-    fclose(fp);
-    return 1; // Return 1 if the file is read and written to the pipes successfully
+    printf("\n1 digits - %d\n", one_digit_count);
+    printf("2 digits - %d\n", two_digit_count);
+    printf("3 digits - %d\n", three_digit_count);
+    printf("4 digits - %d\n", four_digit_count);
+    printf("5 digits - %d\n", five_digit_count);
+    return 1;
 }
+
+int printIsPrimeFromArr(int arr[], int size){
+    int prime_count = 0;
+    int non_prime_count = 0;
+
+    for(int i = 0; i < size; i++){
+        if(arr[i] == 1)
+            prime_count++;
+        else if(arr[i] == 0)
+            non_prime_count++;
+    }
+
+    printf("\nPrimes - %d\n", prime_count);
+    printf("Nonprimes - %d\n", non_prime_count);
+    return 1;
+}
+
