@@ -113,7 +113,6 @@ int main(int argc, char *argv[])
 
             printf("Input file: %s\n", argv[1]); // Print the name of the input file
 
-            //TODO: Ensure that the size parameter is correct
             printDigitCountFromArr(digit_count_array, current_index_of_digit_count_array); // Print the number of digits of the numbers read from the file
             printIsPrimeFromArr(is_prime_array, current_index_of_is_prime_array); // Print the number of prime and non-prime numbers read from the file
 
