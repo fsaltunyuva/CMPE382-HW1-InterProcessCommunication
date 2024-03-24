@@ -1,3 +1,0 @@
-/home/furkan/Desktop/CMPE382-HW1-main/cmake-build-debug/CMakeFiles/CMPE382_HW1.dir
-/home/furkan/Desktop/CMPE382-HW1-main/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/furkan/Desktop/CMPE382-HW1-main/cmake-build-debug/CMakeFiles/rebuild_cache.dir
