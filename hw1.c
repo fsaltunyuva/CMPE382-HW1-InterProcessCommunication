@@ -28,7 +28,6 @@ int main(int argc, char *argv[])
     child1_pid = fork(); // Create the first child process
 
     if (child1_pid == 0){ // First child process (P2)
-
         close(pipe1[1]); // Close the writing end of the pipe1
         close(pipe2[0]); // Close the reading end of the pipe2
 
@@ -71,17 +70,27 @@ int main(int argc, char *argv[])
             close(pipe3[1]); // Close the writing end of the third pipe
             close(pipe4[0]); // Close the reading end of the fourth pipe
 
-            int digit_count_array[1000]; //TODO: Make the length of the array dynamic
-            int current_index_of_digit_count_array = 0;
-
-            int is_prime_array[1000]; //TODO: Make the length of the array dynamic
-            int current_index_of_is_prime_array = 0;
-
             FILE* fp;
             char* line = NULL;
             size_t len = 0;
 
             fp = fopen(argv[1], "r"); // Open the file in read mode
+
+            // Count the number of lines in the file to determine the array length
+            int line_count_of_file = 0;
+            char c;
+            for (c = getc(fp); c != EOF; c = getc(fp)){
+                if (c == '\n'){
+                    line_count_of_file = line_count_of_file + 1;
+                }
+            }
+            rewind(fp); // Reset the file pointer to the beginning of the file
+
+            int digit_count_array[line_count_of_file];
+            int current_index_of_digit_count_array = 0;
+
+            int is_prime_array[line_count_of_file];
+            int current_index_of_is_prime_array = 0;
 
             while (getline(&line, &len, fp) != -1) {
                 int number = atoi(line); // Convert the read line to an integer
