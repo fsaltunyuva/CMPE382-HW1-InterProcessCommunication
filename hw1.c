@@ -4,9 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define FILELOCATION "/home/furkan/Desktop/CMPE382/HW1/numbers.txt"
-#define SLEEPDURATIONBETWEENWRITES 2000
-
 int main(int argc, char *argv[])
 {
     // Function prototypes
@@ -96,7 +93,6 @@ int main(int argc, char *argv[])
                 int number = atoi(line); // Convert the read line to an integer
 
                 write(pipe1[1], &number, sizeof(number)); // Write the number to the pipe1
-                //usleep(SLEEPDURATIONBETWEENWRITES); // Sleep for 2ms (In windows use Sleep(2))
                 write(pipe4[1], &number, sizeof(number)); // Write the number to the pipe4
 
                 int read_digit_count;
