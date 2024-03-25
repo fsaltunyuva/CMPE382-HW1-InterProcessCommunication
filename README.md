@@ -3,7 +3,9 @@
 ## Homework 1 - Multiprocess concept: fork () and pipe() system calls
 
 In this homework, you are expected to write a C program, which demonstrates interprocess communication IPC between three processes using pipes. Your program as the parent process should create two child 
-processes and utilize four pipes, establishing a multi-directional communication as shown in the figure1.png.
+processes and utilize four pipes, establishing a multi-directional communication as shown in the figure below.
+
+![](https://github.com/fsaltunyuva/CMPE382-HW1-InterProcessCommunication/blob/main/figure1.png)
 
 Note that unnecessary pipe ends must be closed to prevent improper pipe usage. Each pipe needs one write one read end to remain open for two way communication.
 
